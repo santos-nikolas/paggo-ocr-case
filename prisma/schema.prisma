@@ -1,0 +1,44 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  // directUrl = env("DIRECT_URL")
+}
+
+// Modelo de Usuário (Simples para o MVP)
+model User {
+  id        String     @id @default(uuid()) // UUID é mais seguro que ID numérico sequencial
+  email     String     @unique
+  name      String?
+  documents Document[] // Um usuário tem vários documentos
+  createdAt DateTime   @default(now())
+}
+
+// O Documento (Fatura)
+model Document {
+  id            String   @id @default(uuid())
+  title         String   @default("Sem título") // Nome do arquivo ou título dado
+  fileUrl       String   // URL pública da imagem no Supabase Storage
+  extractedText String?  @db.Text // @db.Text permite textos longos (padrão String tem limite)
+  
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  
+  interactions  Interaction[] // Histórico do chat sobre este documento
+  createdAt     DateTime @default(now())
+}
+
+// As perguntas e respostas do Chat (LLM)
+model Interaction {
+  id         String   @id @default(uuid())
+  role       String   // "user" ou "assistant" (padrão OpenAI/Gemini)
+  content    String   @db.Text
+  
+  documentId String
+  document   Document @relation(fields: [documentId], references: [id])
+  
+  createdAt  DateTime @default(now())
+}

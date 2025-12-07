@@ -17,7 +17,7 @@ Uma solução Full Stack completa para gestão e análise de faturas utilizando 
 - **Framework:** NestJS
 - **ORM:** Prisma
 - **Banco de Dados:** PostgreSQL (Neon Tech)
-- **AI & OCR:** Google Gemini 1.5 Flash (via Google Generative AI SDK)
+- **AI & OCR:** Google Gemini 2.5 Flash (via Google Generative AI SDK)
 
 ---
 
@@ -39,7 +39,7 @@ Este projeto utiliza uma estrutura de monorepo simples. Siga os passos abaixo pa
 ### 1. Clone o repositório
 
 ```bash
-git clone https://github.com/SEU-USUARIO/paggo-ocr-case.git
+git clone https://github.com/santos-nikolas/paggo-ocr-case.git
 cd paggo-ocr-case
 ```
 
@@ -109,7 +109,7 @@ npm run dev
 ## 🎨 Decisões de Design e Arquitetura
 
 1.  **Identidade Visual:** A interface foi construída seguindo rigorosamente a identidade visual da **Paggo** (Dark Mode First + Dourado/Champagne), transmitindo uma sensação de produto "High-End" e corporativo.
-2.  **AI-First OCR:** Em vez de usar OCRs tradicionais (Tesseract), optou-se pelo **Google Gemini 1.5 Flash**. Isso permite não apenas ler o texto ("Extração"), mas entender o contexto ("Interpretação"), possibilitando o chat interativo.
+2.  **AI-First OCR:** Em vez de usar OCRs tradicionais (Tesseract), optou-se pelo **Google Gemini 2.5 Flash**. Isso permite não apenas ler o texto ("Extração"), mas entender o contexto ("Interpretação"), possibilitando o chat interativo.
 3.  **Segurança:** A autenticação foi delegada ao **Clerk** para garantir segurança de nível industrial (MFA, gestão de sessão) sem reinventar a roda. O Backend valida o usuário antes de processar qualquer arquivo.
 4.  **Performance:** O uso de `suppressHydrationWarning` e otimizações do Next.js garantem uma navegação fluida, enquanto o Prisma gerencia conexões eficientes com o banco.
 

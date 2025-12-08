@@ -45,7 +45,11 @@ export default function DocumentDetails() {
     const fetchDocument = async () => {
       try {
         const response = await api.get(`/documents/${id}`);
-        setMessages(response.data.interactions || []);
+        setDocData(response.data);
+        
+        // CORREÇÃO: Garante que messages é um array, mesmo se o backend retornar null/undefined (o que não está acontecendo, mas é boa prática)
+        setMessages(response.data.interactions || []); 
+        
       } catch (error) {
         console.error("Erro ao carregar documento:", error);
       } finally {

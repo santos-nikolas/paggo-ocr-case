@@ -40,7 +40,6 @@ export default function DocumentDetails() {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const [debugError, setDebugError] = useState<string | null>(null);
 
 
   // 1. Carregar dados
@@ -62,7 +61,6 @@ export default function DocumentDetails() {
       const data = response.data;
 
       if (!data) {
-        setDebugError("Resposta vazia do backend (response.data falsy).");
         setDocData(null);
         return;
       }
@@ -79,22 +77,6 @@ export default function DocumentDetails() {
       }
     } catch (error: any) {
       console.error("Erro ao carregar documento:", error);
-
-      // DEBUG bem rico
-      setDebugError(
-        JSON.stringify(
-          {
-            message: error?.message,
-            name: error?.name,
-            code: error?.code,
-            status: error?.response?.status,
-            statusText: error?.response?.statusText,
-            data: error?.response?.data,
-          },
-          null,
-          2
-        )
-      );
 
       setDocData(null);
     } finally {

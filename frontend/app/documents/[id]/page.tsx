@@ -40,25 +40,71 @@ export default function DocumentDetails() {
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
+  const [debugError, setDebugError] = useState<string | null>(null);
+
+
   // 1. Carregar dados
   useEffect(() => {
-    const fetchDocument = async () => {
-      try {
-        const response = await api.get(`/documents/${id}`);
-        setDocData(response.data);
-        
-        // CORREÇÃO: Garante que messages é um array, mesmo se o backend retornar null/undefined (o que não está acontecendo, mas é boa prática)
-        setMessages(response.data.interactions || []); 
-        
-      } catch (error) {
-        console.error("Erro ao carregar documento:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const fetchDocument = async () => {
+    if (!id) {
+      console.error("Nenhum ID encontrado na rota.");
+      setLoading(false);
+      return;
+    }
 
-    if (id) fetchDocument();
-  }, [id]);
+    try {
+      console.log("➡️ Buscando documento com ID:", id);
+      console.log("➡️ BaseURL do Axios:", api.defaults.baseURL);
+
+      const response = await api.get(`/documents/${id}`);
+      console.log("✅ DOC RESPONSE:", response);
+
+      const data = response.data;
+
+      if (!data) {
+        setDebugError("Resposta vazia do backend (response.data falsy).");
+        setDocData(null);
+        return;
+      }
+
+      // Setamos primeiro o docData para garantir que a página renderiza
+      setDocData(data);
+
+      // Interactions defensivo
+      const rawInteractions = (data as any).interactions;
+      if (Array.isArray(rawInteractions)) {
+        setMessages(rawInteractions);
+      } else {
+        setMessages([]);
+      }
+    } catch (error: any) {
+      console.error("Erro ao carregar documento:", error);
+
+      // DEBUG bem rico
+      setDebugError(
+        JSON.stringify(
+          {
+            message: error?.message,
+            name: error?.name,
+            code: error?.code,
+            status: error?.response?.status,
+            statusText: error?.response?.statusText,
+            data: error?.response?.data,
+          },
+          null,
+          2
+        )
+      );
+
+      setDocData(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchDocument();
+}, [id]);
+
 
   // Scroll automático do chat
   useEffect(() => {
@@ -103,7 +149,24 @@ export default function DocumentDetails() {
 
   // 3. Download
   const handleDownload = () => {
-    if (!docData) return;
+    if (!docData) return (
+  <div className="flex h-screen flex-col items-center justify-center bg-background text-zinc-400 gap-4">
+    <div>Documento não encontrado.</div>
+
+    {debugError && (
+      <pre className="max-w-xl whitespace-pre-wrap text-xs bg-zinc-900/80 border border-zinc-800 rounded p-3 text-left text-zinc-300">
+        {debugError}
+      </pre>
+    )}
+
+    <Link href="/">
+      <Button variant="outline" className="border-zinc-700 text-zinc-300">
+        <ArrowLeft className="mr-2 h-4 w-4" />
+        Voltar ao dashboard
+      </Button>
+    </Link>
+  </div>
+);
 
     const element = document.createElement("a");
     const file = new Blob(

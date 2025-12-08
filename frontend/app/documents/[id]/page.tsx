@@ -149,24 +149,7 @@ export default function DocumentDetails() {
 
   // 3. Download
   const handleDownload = () => {
-    if (!docData) return (
-  <div className="flex h-screen flex-col items-center justify-center bg-background text-zinc-400 gap-4">
-    <div>Documento não encontrado.</div>
-
-    {debugError && (
-      <pre className="max-w-xl whitespace-pre-wrap text-xs bg-zinc-900/80 border border-zinc-800 rounded p-3 text-left text-zinc-300">
-        {debugError}
-      </pre>
-    )}
-
-    <Link href="/">
-      <Button variant="outline" className="border-zinc-700 text-zinc-300">
-        <ArrowLeft className="mr-2 h-4 w-4" />
-        Voltar ao dashboard
-      </Button>
-    </Link>
-  </div>
-);
+    if (!docData) return;
 
     const element = document.createElement("a");
     const file = new Blob(
